@@ -1,53 +1,61 @@
 # golang_release
 multiplatform release
 
-## About
-A simple "Hello, World!" Go application demonstrating multi-platform releases using GitHub Actions.
+A simple hello-world Go program with automated multi-platform releases via GitHub Actions.
 
-## Building
+## Description
 
-To build the application locally:
+This repository demonstrates how to build and release Go binaries for multiple platforms (Linux, Windows, macOS) using GitHub Actions. When you push a tag, the workflow automatically builds binaries for all platforms and uploads them to a single GitHub release.
+
+## Building Locally
 
 ```bash
-go build -o golang_release .
+# Build for Linux
+GOOS=linux GOARCH=amd64 go build -o golang_release-linux-debian main.go
+
+# Build for Windows
+GOOS=windows GOARCH=amd64 go build -o golang_release-windows.exe main.go
+
+# Build for macOS
+GOOS=darwin GOARCH=amd64 go build -o golang_release-macos main.go
 ```
 
 ## Running
 
-After building, run the application:
+```bash
+# Run directly with Go
+go run main.go
+
+# Or run the compiled binary
+./golang_release-linux-debian
+```
+
+## Release Process
+
+The release workflow is triggered automatically when you push a tag that starts with 'v':
 
 ```bash
-./golang_release
+# Create and push a tag
+git tag v1.0.0
+git push origin v1.0.0
 ```
 
-Expected output:
-```
-Hello, World!
-```
+### Workflow Overview
 
-## Multi-Platform Releases
+The `.github/workflows/release.yml` workflow consists of two jobs:
 
-This repository uses GitHub Actions to automatically build binaries for multiple platforms when a tag is pushed:
+1. **build**: Builds binaries for all three platforms in parallel
+   - Uses a matrix strategy for Linux, Windows, and macOS
+   - Uploads each binary as an artifact
+   - Permissions: `contents: read`
 
-- Linux (amd64, arm64)
-- macOS (amd64, arm64)
-- Windows (amd64)
+2. **release**: Creates a GitHub release and uploads all binaries
+   - Downloads all artifacts from the build job
+   - Creates a new GitHub release with the tag name
+   - Uploads all three platform binaries to the same release:
+     - `golang_release-linux-debian` (Linux/Debian)
+     - `golang_release-windows.exe` (Windows)
+     - `golang_release-macos` (macOS)
+   - Permissions: `contents: write`
 
-### Creating a Release
-
-To create a new release:
-
-1. Create and push a tag:
-   ```bash
-   git tag v1.0.0
-   git push origin v1.0.0
-   ```
-
-2. GitHub Actions will automatically:
-   - Build binaries for all supported platforms
-   - Create a GitHub release
-   - Upload all binaries as release assets
-
-### Downloading Releases
-
-Pre-built binaries for all platforms are available on the [Releases](../../releases) page.
+The workflow clearly demonstrates how to build and upload binaries for multiple platforms to a single release.
