@@ -77,7 +77,8 @@ jobs:
 
       - name: Upload release artifacts
         id: upload_release_artifacts
-        run: gh release upload -R $GITHUB_REPOSITORY --clobber ${{ github.ref_name }} *
+        # flags at end
+        run: gh release upload ${{ github.ref_name }} * -R $GITHUB_REPOSITORY --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # - name: Upload Linux binary to Release
