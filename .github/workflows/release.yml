@@ -53,7 +53,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: golang_release-${{ matrix.platform }}-${{ inputs.release_name}}
+          name: golang_release-${{ matrix.platform }}
           path: golang_release-${{ matrix.platform }}*
 
   release:
