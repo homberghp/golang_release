@@ -45,15 +45,15 @@ jobs:
           GOARCH: ${{ matrix.goarch }}
         run: |
           if [ "${{ matrix.goos }}" = "windows" ]; then
-            echo "go build -o golang_release-${{ matrix.platform }}.exe main.go" >> golang_release-${{ matrix.platform }}
+            echo "${{ inputs.release_name }} ${{ inputs.tag }} go build -o golang_release-${{ matrix.platform }}.exe main.go" >> golang_release-${{ matrix.platform }}
           else
-            echo "go build -o golang_release-${{ matrix.platform }} main.go" >> golang_release-${{ matrix.platform }}
+            echo "${{ inputs.release_name }} ${{ inputs.tag }} go build -o golang_release-${{ matrix.platform }} main.go" >> golang_release-${{ matrix.platform }}
           fi
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: golang_release-${{ matrix.platform }}
+          name: golang_release-${{ matrix.platform }}-${{ inputs.release_name}}
           path: golang_release-${{ matrix.platform }}*
 
   release:
