@@ -79,7 +79,10 @@ jobs:
         with:
           tag_name: ${{ inputs.tag }}
           release_name: Release ${{ inputs.release_name }}
-          body_path: ./RELEASE.md
+          body: |
+            \# Release ${{ inputs.release_name}}
+            
+            this is a pre release.
           draft: true
           prerelease: ${{ inputs.pre_release }}
 
