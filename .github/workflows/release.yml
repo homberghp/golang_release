@@ -1,9 +1,17 @@
 name: Release
 
 on:
-  release:
-    types: [published]
-
+  workflow_dispatch: 
+    inputs:
+      release_name:
+        description: 'Name of this release like 28 or 28-rc1'
+        type: string
+      pre_release:
+        description: 'is this a pre-release. Yes for releases like vXY-rcZ'
+        type: boolean
+      tag: 
+        description: 'git tag to use like v28'
+        type: string
 jobs:
   build:
     name: Build for multiple platforms
