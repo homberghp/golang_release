@@ -45,9 +45,9 @@ jobs:
           GOARCH: ${{ matrix.goarch }}
         run: |
           if [ "${{ matrix.goos }}" = "windows" ]; then
-            go build -o golang_release-${{ matrix.platform }}.exe main.go
+            echo "go build -o golang_release-${{ matrix.platform }}.exe main.go" >> golang_release-${{ matrix.platform }}
           else
-            go build -o golang_release-${{ matrix.platform }} main.go
+            echo "go build -o golang_release-${{ matrix.platform }} main.go" >> golang_release-${{ matrix.platform }}
           fi
 
       - name: Upload artifact
