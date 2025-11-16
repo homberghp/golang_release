@@ -32,6 +32,21 @@ jobs:
         with:
           go-version: '1.21'
 
+      - name: Setup Golang
+        uses: actions/setup-go@v5
+        with:
+          go-version: ~1.22
+
+      - name: Setup Golang caches
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-golang-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-golang-
+
       - name: Build binary
         env:
           GOOS: ${{ matrix.goos }}
@@ -81,32 +96,3 @@ jobs:
         run: gh release upload --clobber ${{ github.ref_name }} -R $GITHUB_REPOSITORY $(find artifacts -type f)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # - name: Upload Linux binary to Release
-      #   uses: svenstaro/upload-release-action@latest
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: artifacts/golang_release-linux-debian/golang_release-linux-debian
-      #     asset_name: golang_release-linux-debian
-      #     asset_content_type: application/octet-stream
-
-      # - name: Upload Windows binary to Release
-      #   uses: svenstaro/upload-release-action@latest
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: artifacts/golang_release-windows/golang_release-windows.exe
-      #     asset_name: golang_release-windows.exe
-      #     asset_content_type: application/octet-stream
-
-      # - name: Upload macOS binary to Release
-      #   uses: svenstaro/upload-release-action@latest
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: artifacts/golang_release-macos/golang_release-macos
-      #     asset_name: golang_release-macos
-      #     asset_content_type: application/octet-stream
