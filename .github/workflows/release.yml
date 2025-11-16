@@ -72,17 +72,17 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -R artifacts
 
-      # - name: Create Release
-      #   id: create_release
-      #   uses: comnoco/create-release-action@latest
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: ${{ github.ref_name }}
-      #     release_name: Release ${{ github.ref_name }}
-      #     body_path: RELEASE.md
-      #     draft: true
-      #     prerelease: false
+      - name: Create Release
+        id: create_release
+        uses: comnoco/create-release-action@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ inputs.release-tag }}
+          release_name: Release ${{ inputs.netbeans-release }}
+          body_path: RELEASE.md
+          draft: true
+          prerelease: false
 
       - name: Upload release artifacts
         id: upload_release_artifacts
