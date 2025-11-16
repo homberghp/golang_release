@@ -56,6 +56,10 @@ jobs:
     permissions:
       contents: write
     steps:
+      # checkout to get RELEASES.md file
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
@@ -72,6 +76,7 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           release_name: Release ${{ github.ref_name }}
+          body_path: RELEASE.md
           draft: false
           prerelease: false
 
