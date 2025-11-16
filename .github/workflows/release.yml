@@ -77,10 +77,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
+          tag_name: ${{ inputs.tag }}
+          release_name: Release ${{ inputs.release_name }}
           draft: true
-          prerelease: false
+          prerelease: ${{ inputs.pre_release }}
 
       - name: Upload release artifacts
         id: upload_release_artifacts
