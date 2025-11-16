@@ -24,20 +24,31 @@ jobs:
           - goos: linux
             goarch: amd64
             platform: linux-debian
-          # - goos: windows
-          #   goarch: amd64
-          #   platform: windows
-          # - goos: darwin
-          #   goarch: amd64
-          #   platform: macos
+          - goos: windows
+            goarch: amd64
+            platform: windows
+          - goos: darwin
+            goarch: amd64
+            platform: macos
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Go
+      - name: Setup Golang
         uses: actions/setup-go@v5
         with:
-          go-version: '1.21'
+          go-version: ~1.22
+
+      - name: Setup Golang caches
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-golang-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-golang-
 
       - name: Build binary
         env:
