@@ -32,6 +32,6 @@ jobs:
 
       - name: Attach to release
         id: attach_to_release
-        run: gh release upload --clobber ${{ inputs.release_tag }} -R $_GIT_HUB_REPOSITORY $(find artifacts -type f)
+        run: gh release upload --clobber ${{ inputs.release_tag }} -R $GIT_HUB_REPOSITORY $(find artifacts -type f)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
