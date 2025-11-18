@@ -28,7 +28,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Display structure of downloaded files
-        run: ls -R artifacts
+        run: find .
 
       - name: Attach to release
         id: attach_to_release
