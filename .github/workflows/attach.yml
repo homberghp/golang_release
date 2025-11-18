@@ -7,7 +7,7 @@ on:
         description:  'The release tag the release artifacts should be attached to example v28-rc1-build1'
         type: string
       build-run-id:
-        description: 'the build id that produced the artifacts'
+        description: 'the run id that produced the artifacts'
         type: string
 
 jobs:
@@ -23,7 +23,7 @@ jobs:
 
       - name: Download all artifacts from run
         id: download_run
-        run: gh run download  ${{ inputs.build-run-id }}
+        run: gh run download -D artifacts ${{ inputs.build-run-id }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
