@@ -1,0 +1,92 @@
+name: Release
+
+on:
+  workflow_dispatch: 
+    inputs:
+      release-tag:
+        description:  'The release tag the release artifacts should be attached to example v28-rc1-build1'
+        type: string
+      netbeans-release:
+        description: 'the netbeans release like 29 or 29-rc3'
+        type: string
+jobs:
+  build:
+    name: Build for multiple platforms
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+            platform: linux-debian
+          - goos: windows
+            goarch: amd64
+            platform: windows
+          - goos: darwin
+            goarch: amd64
+            platform: macos
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Build binary
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+        run: |
+          if [ "${{ matrix.goos }}" = "windows" ]; then
+            go build -o golang_release-${{ matrix.platform }}.exe main.go
+          else
+            go build -o golang_release-${{ matrix.platform }} main.go
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: golang_release-${{ matrix.platform }}
+          path: golang_release-${{ matrix.platform }}*
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      # checkout to get RELEASES.md file
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Display structure of downloaded files
+        run: ls -R artifacts
+
+      - name: Create Release
+        id: create_release
+        uses: comnoco/create-release-action@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ inputs.release-tag }}
+          release_name: Release ${{ inputs.netbeans-release }}
+          body_path: RELEASE.md
+          draft: true
+          prerelease: false
+
+      - name: Upload release artifacts
+        id: upload_release_artifacts
+        # flags at end
+        run: gh release upload --clobber ${{ inputs.release-tag }} -R $GITHUB_REPOSITORY $(find artifacts -type f)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
