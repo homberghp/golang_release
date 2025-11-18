@@ -1,0 +1,35 @@
+name: Attach
+
+on:
+  workflow_dispatch:
+    inputs:
+      release-tag:
+        description:  'The release tag the release artifacts should be attached to example v28-rc1-build1'
+        type: string
+      build-run-id:
+        description: 'the build id that produced the artifacts'
+        type: string
+
+jobs:
+  attach_artifacts: 
+    name: Attach artifacts
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      # checkout to get RELEASES.md file
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts from run
+        id: download_run
+        run: gh run download  ${{ inputs.build-run-id }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Display structure of downloaded files
+        run: ls -R artifacts
+
+      - name: Attach to release
+        id: attach_to_release
+        run: gh release upload --clobber ${{ inputs.release_tag }} -R $_GIT_HUB_REPOSITORY $(find artifacts -type f)
